@@ -1,0 +1,153 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Roboto, serif;
+}
+
+body {
+  background-color: #ffffff;
+  color: #2f69b1;
+
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+
+.hero {
+  background: linear-gradient(to right, #2F69B1, #2F69B1);
+  padding: 5rem 1.5rem;
+  text-align: center;
+}
+
+.hero h1 {
+  color: white;
+  font-size: 3.5rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+/* Course categories */
+.categories {
+  background-color: #ffffff;
+  padding: 2rem 1.5rem;
+}
+
+.category-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.category-tab {
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.category-tab.inactive {
+  background-color: #EEF3F9;
+  color: #2f69b1;
+}
+
+.category-tab.inactive:hover {
+  background-color: #7eabe2;
+}
+
+.category-tab.active {
+  background-color: #2f69b1;
+  color: white;
+}
+
+/* Course cards */
+.courses {
+  background-color: #ffffff;
+  padding: 4rem 1.5rem;
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.course-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.card-unique {
+  position: relative;
+  bottom: 60px;
+}
+
+.icon-container img {
+  width: 6rem;
+  height: 6rem;
+  margin: 0 auto 1.5rem;
+  background-color: #eef3f9;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.course-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2f69b1;
+  margin-bottom: 1.5rem;
+}
+
+.arrow-button {
+  width: 3rem;
+  height: 3rem;
+  background-color: #2f69b1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.arrow-button:hover {
+  background-color: #265a9a;
+}
+
+.arrow-button svg {
+  fill: white;
+}
+
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-menu {
+    display: none;
+  }
+
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+
+  .category-tabs {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .course-grid {
+    grid-template-columns: 1fr;
+  }
+}
