@@ -35,29 +35,22 @@
                 Study smarter.<br>
                 & Succeed together.
             </h1>
-
             <p class="hero-subtitle">
                 StudySwap is here for you, offering a platform to exchange courses, exercises & revision notes among students.
             </p>
-
             <button class="learn-more-btn">Learn more</button>
         </div>
-
         <div class="hero-illustration">
             <img src="IMG/hero-section.png">
         </div>
     </main>
-
     <!-- Level Selection Section -->
     <section class="level-selection">
         <div class="container">
-            <!-- Main Heading -->
             <h2 class="levels-main-heading">
                 Choose Your level &<br>
                 Get Started
             </h2>
-
-            <!-- Blue Container with Cards -->
             <div class="blue-container">
                 <div class="cards-grid">
                     <!-- Primary Card -->
@@ -73,7 +66,6 @@
                             </button>
                         </div>
                     </div>
-
                     <!-- Middle School Card -->
                     <div class="level-card">
                         <div class="card-content">
@@ -90,7 +82,6 @@
                             </button>
                         </div>
                     </div>
-
                     <!-- High School Card -->
                     <div class="level-card">
                         <div class="card-content">
@@ -111,7 +102,7 @@
             </div>
         </div>
     </section>
-    <!--     about us-->
+    <!--about us-->
     <div class="about-container">
         <!-- Header Section -->
         <div class="about-header">
@@ -121,7 +112,6 @@
                 <div class="about-header-line"></div>
             </div>
         </div>
-
         <!-- First Content Section -->
         <div class="about-content-section">
             <div class="about-text-content">
@@ -137,7 +127,6 @@
                     class="about-illustration" />
             </div>
         </div>
-
         <!-- Second Content Section -->
         <div class="about-content-section reverse">
             <div class="image-container">
@@ -154,7 +143,6 @@
             </div>
         </div>
     </div>
-
     <section class="body">
         <div class="ready-container">
             <!-- Left Content -->
@@ -168,13 +156,11 @@
                         By clicking the button, you will be redirected to the upload page where you can submit your course materials.
                     </p>
                 </div>
-
                 <button class="upload-button">
                     Upload from here
                 </button>
             </div>
-
-            <!-- Right Illustration -->
+            <!-- Right picture -->
             <div class="illustration-container">
                 <img
                     src="IMG/girl study.png"
@@ -183,7 +169,7 @@
             </div>
         </div>
     </section>
-    <!-- -->
+    <!--social media section -->
     <section class="social-section">
         <div class="cont">
             <div class="social-grid">
@@ -194,14 +180,12 @@
                         alt="StudySwap Learning Platform"
                         class="social-image" />
                 </div>
-
                 <!-- Content -->
                 <div class="social-content">
                     <div class="social-content-text">
                         <h1 class="social-heading">Join our learning community online</h1>
                         <p class="sub-heading">Swap notes. Grow together</p>
                     </div>
-
                     <!-- Social Media Icons -->
                     <div class="social-icons">
                         <a href="#" class="social-icon" aria-label="Facebook">
@@ -229,6 +213,7 @@
             </div>
         </div>
     </section>
+    <!--footer-->
     <footer>
         <img src="IMG/logo.png" class="footer-logo" />
 
@@ -252,7 +237,5 @@
             <p class="copyright">© 2025 Studyswap, Inc. All rights reserved.</p>
         </div>
     </footer>
-
 </body>
-
 </html>
