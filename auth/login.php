@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudySwap - Login</title>
-   <link rel="stylesheet" href="../style.css">
+   <link rel="stylesheet" href="../CSS/auth.css">
 </head>
 <body>
     <div>
@@ -26,7 +26,7 @@
                 <div class="form-links">
                     <a href="../auth/register.php">Create account</a>
                     <span class="separator">|</span>
-                    <a href="#forgot">Forgot password</a>
+                    <a href="../auth/forgot_password.php">Forgot password</a>
                 </div>
             </form>
         </div>

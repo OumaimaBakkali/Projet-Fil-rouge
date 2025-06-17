@@ -14,13 +14,14 @@
                 <img src="../IMG/logo.png" >
             </div>
         <div class="forget-password-card">
-            <h2 class="forget-welcome-title">Forgot your password?</h2>
-            <p class="forget-title">Don’t worry, happens to all of us. Enter your email below to recover your password</p>
+            <h2 class="forget-welcome-title">Verify code</h2>
+            <p class="forget-title">An authentication code has been sent to your email.</p>
             <form>
                 <div class="forget-form-group">
-                    <input type="email" class="forget-form-input" placeholder="Email" required>
+                    <input type="email" class="forget-form-input" placeholder="Enter code" required>
+                     <p>Do you have an account?<a href="../auth/login.php">Resend</a></p> 
                 </div>
-                <button type="submit" class="forget-button">SEND</button>
+                <button type="submit" class="forget-button">VERIFY</button>
                 <div class="form-links">
                     <a href="../auth/login.php">Back to login</a>
                 </div>
