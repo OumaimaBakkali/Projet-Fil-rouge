@@ -1,343 +1,475 @@
-  * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Roboto, serif;
-  }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Roboto, serif;
+}
 
-  body {
-      background-color: #fbfbfb;
-      min-height: 100vh;
-      line-height: 1.6;
-  }
+body {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    line-height: 1.6;
+    color: #333;
+}
 
-  /* Header Styles */
-  .header {
-      background-color: #ffffff;
-      border-bottom: 1px solid #f1f1f1;
-      padding: 1rem 1.5rem;
-  }
+/* Main Content */
+.main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
 
-  .header-container {
-      max-width: 1280px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-  }
+/* Course Card */
+.course-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(47, 105, 177, 0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
 
-  .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-  }
+.course-header {
+    margin-bottom: 2rem;
+}
 
-  .logo-icon {
-      width: 32px;
-      height: 32px;
-      color: #2f69b1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-  }
+.breadcrumb {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
 
-  .logo-text h1 {
-      font-size: 1.25rem;
-      font-weight: bold;
-      color: #2f69b1;
-      margin: 0;
-  }
+.breadcrumb a {
+    color: #2f69b1;
+    text-decoration: none;
+}
 
-  .logo-text p {
-      font-size: 0.75rem;
-      color: #2f69b1;
-      margin: -2px 0 0 0;
-  }
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
 
-  .nav {
-      display: flex;
-      align-items: center;
-      gap: 2rem;
-  }
+.course-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #2f69b1;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
 
-  .nav a {
-      color: #2f69b1;
-      text-decoration: none;
-      font-weight: 500;
-      transition: opacity 0.2s;
-  }
+.course-meta {
+    color: #6c757d;
+    font-size: 1rem;
+}
 
-  .nav a:hover {
-      opacity: 0.8;
-  }
+.course-description {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #2f69b1;
+}
 
-  .user-btn {
-      width: 40px;
-      height: 40px;
-      border: 1px solid #2f69b1;
-      border-radius: 50%;
-      background: transparent;
-      color: #2f69b1;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-  }
+.course-description h3 {
+    color: #2f69b1;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+}
 
-  /* Main Content */
-  .main {
-      max-width: 1024px;
-      margin: 0 auto;
-      padding: 3rem 1.5rem;
-  }
+.course-description p {
+    color: #555;
+    line-height: 1.7;
+}
 
-  .card {
-      background-color: #eef3f9;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-  }
+/* Document Section */
+.document-section h3 {
+    color: #2f69b1;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
 
-  .card-header {
-      text-align: center;
-      padding: 1.5rem 1.5rem 1rem;
-  }
+.document-card {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
 
-  .card-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: #2f69b1;
-      margin: 0;
-  }
+.document-card:hover {
+    border-color: #2f69b1;
+    box-shadow: 0 4px 15px rgba(47, 105, 177, 0.1);
+}
 
-  .card-content {
-      padding: 0 1.5rem 1.5rem;
-  }
+.document-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
 
-  .download-section {
-      border: 2px dashed #2f69b1;
-      border-radius: 8px;
-      padding: 2rem;
-      text-align: center;
-      background-color: #ffffff;
-      margin-bottom: 1.5rem;
-  }
+.document-icon {
+    font-size: 2.5rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
 
-  .download-btn {
-      background: transparent;
-      border: none;
-      color: #2f69b1;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin: 0 auto;
-      font-size: 1rem;
-  }
+.document-details h4 {
+    color: #2f69b1;
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
 
-  .course-details {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-  }
+.document-meta {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
 
-  .detail-item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-  }
+.document-actions {
+    display: flex;
+    gap: 0.75rem;
+}
 
-  .detail-icon {
-      width: 20px;
-      height: 20px;
-      color: #2f69b1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-  }
+.preview-btn,
+.download-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
 
-  .detail-text {
-      color: #2f69b1;
-      font-weight: 500;
-  }
+.preview-btn {
+    background: #17a2b8;
+    color: white;
+}
 
-  /* Comments Section */
-  .comments-section {
-      margin-top: 2rem;
-  }
+.preview-btn:hover {
+    background: #138496;
+    transform: translateY(-2px);
+}
 
-  .comments-count {
-      text-align: right;
-      margin-bottom: 1rem;
-  }
+.download-btn {
+    background: #2f69b1;
+    color: white;
+}
 
-  .comments-count span {
-      color: #2f69b1;
-      font-weight: 500;
-  }
+.download-btn:hover {
+    background: #1e4a7a;
+    transform: translateY(-2px);
+}
 
-  .comment-form {
-      display: flex;
-      gap: 0.75rem;
-  }
+/* PDF Modal */
+.pdf-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
 
-  .comment-input {
-      flex: 1;
-      padding: 0.75rem 1rem;
-      border: 1px solid #f1f1f1;
-      border-radius: 6px;
-      background-color: #ffffff;
-      color: #6b7280;
-      font-size: 1rem;
-  }
+.pdf-modal-content {
+    background: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
 
-  .comment-input::placeholder {
-      color: #9ca3af;
-  }
+.pdf-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    background: #f8f9fa;
+}
 
-  .add-btn {
-      background-color: #2f69b1;
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: background-color 0.2s;
-  }
+.pdf-modal-header h3 {
+    color: #2f69b1;
+    margin: 0;
+}
 
-  .add-btn:hover {
-      background-color: #1e4a7a;
-  }
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
 
-  /* Footer */
-  .footer {
-      background-color: #eef3f9;
-      margin-top: 5rem;
-      padding: 3rem 1.5rem;
-  }
+.close-modal:hover {
+    background: #e9ecef;
+    color: #2f69b1;
+}
 
-  .footer-container {
-      max-width: 1280px;
-      margin: 0 auto;
-  }
+.pdf-container {
+    padding: 0;
+}
 
-  .footer-logo {
-      text-align: center;
-      margin-bottom: 2rem;
-  }
+.pdf-container iframe {
+    border: none;
+    display: block;
+}
 
-  .footer-logo-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-  }
+/* Comments Section */
+.comments-section {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(47, 105, 177, 0.1);
+    padding: 2rem;
+}
 
-  .footer-logo-icon {
-      width: 40px;
-      height: 40px;
-      color: #2f69b1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-  }
+.comments-header h3 {
+    color: #2f69b1;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
 
-  .footer-logo h3 {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #2f69b1;
-      margin: 0;
-  }
+/* Add Comment Form */
+.add-comment-form {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 2px solid #e9ecef;
+}
 
-  .footer-logo .tagline {
-      font-size: 0.875rem;
-      color: #2f69b1;
-      margin: -2px 0 0 0;
-  }
+.comment-form .form-row {
+    margin-bottom: 1rem;
+}
 
-  .footer-description {
-      color: #2f69b1;
-      max-width: 512px;
-      margin: 0 auto;
-      text-align: center;
-  }
+.author-input,
+.comment-textarea {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background: white;
+}
 
-  .social-icons {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin: 2rem 0;
-  }
+.author-input:focus,
+.comment-textarea:focus {
+    outline: none;
+    border-color: #2f69b1;
+    box-shadow: 0 0 0 3px rgba(47, 105, 177, 0.1);
+}
 
-  .social-btn {
-      width: 40px;
-      height: 40px;
-      background: transparent;
-      border: none;
-      color: #2f69b1;
-      cursor: pointer;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      transition: background-color 0.2s;
-  }
+.comment-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
 
-  .social-btn:hover {
-      background-color: rgba(47, 105, 177, 0.1);
-  }
+.add-comment-btn {
+    background: #2f69b1;
+    color: white;
+    border: none;
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
 
-  .footer-nav {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      margin-bottom: 1.5rem;
-  }
+.add-comment-btn:hover {
+    background: #1e4a7a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(47, 105, 177, 0.3);
+}
 
-  .footer-nav a {
-      color: #2f69b1;
-      text-decoration: none;
-      font-weight: 500;
-      transition: opacity 0.2s;
-  }
+/* Comments List */
+.no-comments {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6c757d;
+    font-size: 1.1rem;
+}
 
-  .footer-nav a:hover {
-      opacity: 0.8;
-  }
+.comment-item {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    background: #fafbfc;
+    transition: all 0.3s ease;
+}
 
-  .copyright {
-      text-align: center;
-      color: #2f69b1;
-      font-size: 0.875rem;
-  }
+.comment-item:hover {
+    border-color: #2f69b1;
+    box-shadow: 0 2px 10px rgba(47, 105, 177, 0.1);
+}
 
-  /* Responsive Design */
-  @media (max-width: 768px) {
-      .nav {
-          display: none;
-      }
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
 
-      .header-container {
-          justify-content: space-between;
-      }
+.comment-author {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
 
-      .main {
-          padding: 2rem 1rem;
-      }
+.author-avatar {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    background: #2f69b1;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-      .footer-nav {
-          flex-direction: column;
-          gap: 1rem;
-          text-align: center;
-      }
+.author-name {
+    font-weight: 600;
+    color: #2f69b1;
+    font-size: 1rem;
+}
 
-      .comment-form {
-          flex-direction: column;
-      }
-  }
+.comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.comment-time {
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+.delete-comment-btn {
+    background: none;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    font-size: 1.1rem;
+}
+
+.delete-comment-btn:hover {
+    background: #dc3545;
+    color: white;
+    transform: scale(1.1);
+}
+
+.comment-content {
+    color: #555;
+    line-height: 1.7;
+    font-size: 1rem;
+}
+
+.comment-content p {
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main {
+        padding: 1rem;
+    }
+    
+    .course-card,
+    .comments-section {
+        padding: 1.5rem;
+    }
+    
+    .course-title {
+        font-size: 2rem;
+    }
+    
+    .document-card {
+        flex-direction: column;
+        gap: 1.5rem;
+        text-align: center;
+    }
+    
+    .document-actions {
+        justify-content: center;
+    }
+    
+    .comment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .comment-actions {
+        align-self: flex-end;
+    }
+    
+    .pdf-modal {
+        padding: 1rem;
+    }
+    
+    .pdf-modal-content {
+        max-height: 95vh;
+    }
+    
+    .pdf-container iframe {
+        height: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    .course-title {
+        font-size: 1.75rem;
+    }
+    
+    .document-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .preview-btn,
+    .download-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .add-comment-form {
+        padding: 1rem;
+    }
+    
+    .comment-item {
+        padding: 1rem;
+    }
+}
