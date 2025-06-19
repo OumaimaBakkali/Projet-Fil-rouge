@@ -174,7 +174,7 @@ function getSubjectIcon($subject_name)
 
     <script>
         function goToCourse(courseId) {
-            window.location.href = `course_details.php?course_id=${courseId}`;
+            window.location.href = `view.php?id=${courseId}`;
         }
     </script>
 
