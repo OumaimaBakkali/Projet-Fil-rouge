@@ -1,4 +1,178 @@
-(($_POST['type'] ?? '') === 'exercise') ? 'selected' : ''; ?>>Exercise</option>
+<?php
+require_once 'config/database.php';
+
+$message = '';
+$message_type = '';
+
+// Handle AJAX requests for dynamic dropdowns
+if (isset($_GET['ajax'])) {
+    header('Content-Type: application/json');
+    
+    if ($_GET['ajax'] === 'sectors' && isset($_GET['level_id'])) {
+        $level_id = (int)$_GET['level_id'];
+        $query = "SELECT s.Sector_id, s.sector_name 
+                  FROM sector s 
+                  INNER JOIN level_sector ls ON s.Sector_id = ls.Sector_id 
+                  WHERE ls.level_id = :level_id 
+                  ORDER BY s.sector_name";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':level_id', $level_id);
+        $stmt->execute();
+        echo json_encode($stmt->fetchAll());
+        exit;
+    }
+    
+    if ($_GET['ajax'] === 'subjects' && isset($_GET['level_id'], $_GET['sector_id'])) {
+        $level_id = (int)$_GET['level_id'];
+        $sector_id = (int)$_GET['sector_id'];
+        $query = "SELECT DISTINCT sub.subject_id, sub.subject_name 
+                  FROM subject sub
+                  INNER JOIN program p ON sub.subject_id = p.subject_id
+                  WHERE p.level_id = :level_id AND p.Sector_id = :sector_id
+                  ORDER BY sub.subject_name";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':level_id', $level_id);
+        $stmt->bindParam(':sector_id', $sector_id);
+        $stmt->execute();
+        echo json_encode($stmt->fetchAll());
+        exit;
+    }
+}
+
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $title = trim($_POST['title'] ?? '');
+    $description = trim($_POST['description'] ?? '');
+    $type = $_POST['type'] ?? '';
+    $level_id = (int)($_POST['level_id'] ?? 0);
+    $sector_id = (int)($_POST['sector_id'] ?? 0);
+    $subject_id = (int)($_POST['subject_id'] ?? 0);
+    
+    // Validation
+    if (empty($title) || empty($type) || !$level_id || !$sector_id || !$subject_id) {
+        $message = 'Please fill in all required fields.';
+        $message_type = 'error';
+    } elseif (!isset($_FILES['document']) || $_FILES['document']['error'] !== UPLOAD_ERR_OK) {
+        $message = 'Please select a valid document file.';
+        $message_type = 'error';
+    } else {
+        $file = $_FILES['document'];
+        $allowed_types = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'text/plain'];
+        $max_size = 10 * 1024 * 1024; // 10MB
+        
+        if (!in_array($file['type'], $allowed_types)) {
+            $message = 'Invalid file type. Please upload PDF, DOC, DOCX, PPT, PPTX, or TXT files.';
+            $message_type = 'error';
+        } elseif ($file['size'] > $max_size) {
+            $message = 'File size must be less than 10MB.';
+            $message_type = 'error';
+        } else {
+            try {
+                $db->beginTransaction();
+                
+                // Get or create program
+                $query = "SELECT program_id FROM program WHERE level_id = :level_id AND Sector_id = :sector_id AND subject_id = :subject_id";
+                $stmt = $db->prepare($query);
+                $stmt->bindParam(':level_id', $level_id);
+                $stmt->bindParam(':sector_id', $sector_id);
+                $stmt->bindParam(':subject_id', $subject_id);
+                $stmt->execute();
+                $program = $stmt->fetch();
+                
+                if (!$program) {
+                    $query = "INSERT INTO program (level_id, Sector_id, subject_id) VALUES (:level_id, :sector_id, :subject_id)";
+                    $stmt = $db->prepare($query);
+                    $stmt->bindParam(':level_id', $level_id);
+                    $stmt->bindParam(':sector_id', $sector_id);
+                    $stmt->bindParam(':subject_id', $subject_id);
+                    $stmt->execute();
+                    $program_id = $db->lastInsertId();
+                } else {
+                    $program_id = $program['program_id'];
+                }
+                
+                // Insert course
+                $query = "INSERT INTO course (title, description, program_id) VALUES (:title, :description, :program_id)";
+                $stmt = $db->prepare($query);
+                $stmt->bindParam(':title', $title);
+                $stmt->bindParam(':description', $description);
+                $stmt->bindParam(':program_id', $program_id);
+                $stmt->execute();
+                $course_id = $db->lastInsertId();
+                
+                // Handle file upload
+                $file_extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+                $unique_filename = uniqid() . '_' . time() . '.' . $file_extension;
+                $upload_path = 'uploads/' . $unique_filename;
+                
+                if (move_uploaded_file($file['tmp_name'], $upload_path)) {
+                    // Insert document record
+                    $query = "INSERT INTO document (course_id, file_name, file_path, file_size, type) VALUES (:course_id, :file_name, :file_path, :file_size, :type)";
+                    $stmt = $db->prepare($query);
+                    $stmt->bindParam(':course_id', $course_id);
+                    $stmt->bindParam(':file_name', $file['name']);
+                    $stmt->bindParam(':file_path', $upload_path);
+                    $stmt->bindParam(':file_size', $file['size']);
+                    $stmt->bindParam(':type', $type);
+                    $stmt->execute();
+                    
+                    $db->commit();
+                    
+                    // Redirect to list page
+                    header("Location: list.php?level_id=$level_id&sector_id=$sector_id");
+                    exit;
+                } else {
+                    throw new Exception('Failed to upload file.');
+                }
+                
+            } catch (Exception $e) {
+                $db->rollBack();
+                $message = 'Error: ' . $e->getMessage();
+                $message_type = 'error';
+            }
+        }
+    }
+}
+
+// Get levels for dropdown
+$query = "SELECT * FROM level ORDER BY level_id";
+$stmt = $db->prepare($query);
+$stmt->execute();
+$levels = $stmt->fetchAll();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudySwap - Upload Course</title>
+    <link rel="stylesheet" href="CSS/upload.css">
+    <link rel="stylesheet" href="CSS/style.css">
+</head>
+<body>
+    <?php include "header.php"; ?>
+
+    <main class="main">
+        <div class="upload-container">
+            <h1 class="title">Upload Your Course</h1>
+            
+            <?php if ($message): ?>
+                <div class="message <?php echo $message_type; ?>">
+                    <?php echo htmlspecialchars($message); ?>
+                </div>
+            <?php endif; ?>
+
+            <form method="POST" enctype="multipart/form-data" class="form" id="uploadForm">
+                <!-- First Row -->
+                <div class="form-row">
+                    <input type="text" name="title" class="form-input" placeholder="Course Title" 
+                           value="<?php echo htmlspecialchars($_POST['title'] ?? ''); ?>" required>
+                    
+                    <select name="type" class="form-select" required>
+                        <option value="">Select Type</option>
+                        <option value="course" <?php echo (($_POST['type'] ?? '') === 'course') ? 'selected' : ''; ?>>Course</option>
+                        <option value="exercise" <?php echo (($_POST['type'] ?? '') === 'exercise') ? 'selected' : ''; ?>>Exercise</option>
                         <option value="exam" <?php echo (($_POST['type'] ?? '') === 'exam') ? 'selected' : ''; ?>>Exam</option>
                         <option value="notes" <?php echo (($_POST['type'] ?? '') === 'notes') ? 'selected' : ''; ?>>Notes</option>
                         <option value="summary" <?php echo (($_POST['type'] ?? '') === 'summary') ? 'selected' : ''; ?>>Summary</option>

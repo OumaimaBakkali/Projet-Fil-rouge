@@ -59,6 +59,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_comment'])) {
     }
 }
 
+// Handle comment editing
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_comment'])) {
+    $comment_id = (int)$_POST['comment_id'];
+    $content = trim($_POST['content'] ?? '');
+    
+    if (!empty($content)) {
+        $query = "UPDATE comment SET content = :content WHERE comment_id = :comment_id AND course_id = :course_id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':content', $content);
+        $stmt->bindParam(':comment_id', $comment_id);
+        $stmt->bindParam(':course_id', $course_id);
+        
+        if ($stmt->execute()) {
+            header("Location: view.php?id=$course_id");
+            exit;
+        }
+    }
+}
+
 // Handle comment deletion
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_comment'])) {
     $comment_id = (int)$_POST['comment_id'];
@@ -111,8 +130,8 @@ function timeAgo($datetime) {
         <div class="course-card">
             <div class="course-header">
                 <div class="breadcrumb">
-                    <a href="index.php">Home</a> > 
-                    <a href="levels.php">Levels</a> > 
+                    <a href="index.php">الرئيسية</a> > 
+                    <a href="levels.php">المستويات</a> > 
                     <span><?php echo htmlspecialchars($course['level_name']); ?></span> > 
                     <span><?php echo htmlspecialchars($course['sector_name']); ?></span>
                 </div>
@@ -126,7 +145,7 @@ function timeAgo($datetime) {
 
             <?php if ($course['description']): ?>
                 <div class="course-description">
-                    <h3>Description</h3>
+                    <h3>الوصف</h3>
                     <p><?php echo nl2br(htmlspecialchars($course['description'])); ?></p>
                 </div>
             <?php endif; ?>
@@ -134,7 +153,7 @@ function timeAgo($datetime) {
             <!-- Document Section -->
             <?php if ($course['document_id']): ?>
                 <div class="document-section">
-                    <h3>📄 Document</h3>
+                    <h3>📄 الملف</h3>
                     <div class="document-card">
                         <div class="document-info">
                             <div class="document-icon">
@@ -162,11 +181,11 @@ function timeAgo($datetime) {
                         <div class="document-actions">
                             <?php if (strtolower(pathinfo($course['file_name'], PATHINFO_EXTENSION)) === 'pdf'): ?>
                                 <button class="preview-btn" onclick="previewPDF('<?php echo $course['file_path']; ?>')">
-                                    👁️ Preview
+                                    👁️ معاينة
                                 </button>
                             <?php endif; ?>
                             <a href="<?php echo $course['file_path']; ?>" download class="download-btn">
-                                ⬇️ Download
+                                ⬇️ تحميل
                             </a>
                         </div>
                     </div>
@@ -176,7 +195,7 @@ function timeAgo($datetime) {
                         <div id="pdfModal" class="pdf-modal">
                             <div class="pdf-modal-content">
                                 <div class="pdf-modal-header">
-                                    <h3>PDF Preview</h3>
+                                    <h3>معاينة PDF</h3>
                                     <button class="close-modal" onclick="closePDFModal()">&times;</button>
                                 </div>
                                 <div class="pdf-container">
@@ -192,19 +211,19 @@ function timeAgo($datetime) {
         <!-- Comments Section -->
         <div class="comments-section">
             <div class="comments-header">
-                <h3>💬 Comments (<?php echo count($comments); ?>)</h3>
+                <h3>💬 التعليقات (<?php echo count($comments); ?>)</h3>
             </div>
 
             <!-- Add Comment Form -->
             <div class="add-comment-form">
                 <form method="POST" class="comment-form">
                     <div class="form-row">
-                        <input type="text" name="author_name" placeholder="Your name" class="author-input" required>
+                        <input type="text" name="author_name" placeholder="اسمك" class="author-input" required>
                     </div>
                     <div class="form-row">
-                        <textarea name="content" placeholder="Write your comment here..." class="comment-textarea" required></textarea>
+                        <textarea name="content" placeholder="اكتب تعليقك هنا..." class="comment-textarea" required></textarea>
                     </div>
-                    <button type="submit" name="add_comment" class="add-comment-btn">Add Comment</button>
+                    <button type="submit" name="add_comment" class="add-comment-btn">إضافة تعليق</button>
                 </form>
             </div>
 
@@ -212,11 +231,11 @@ function timeAgo($datetime) {
             <div class="comments-list">
                 <?php if (empty($comments)): ?>
                     <div class="no-comments">
-                        <p>💭 No comments yet. Be the first to comment!</p>
+                        <p>💭 لا توجد تعليقات بعد. كن أول من يعلق!</p>
                     </div>
                 <?php else: ?>
                     <?php foreach ($comments as $comment): ?>
-                        <div class="comment-item">
+                        <div class="comment-item" id="comment-<?php echo $comment['comment_id']; ?>">
                             <div class="comment-header">
                                 <div class="comment-author">
                                     <span class="author-avatar">👤</span>
@@ -224,16 +243,29 @@ function timeAgo($datetime) {
                                 </div>
                                 <div class="comment-actions">
                                     <span class="comment-time"><?php echo timeAgo($comment['created_at']); ?></span>
-                                    <form method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this comment?')">
+                                    <button class="edit-comment-btn" onclick="editComment(<?php echo $comment['comment_id']; ?>)" title="تعديل التعليق">
+                                        ✏️
+                                    </button>
+                                    <form method="POST" style="display: inline;" onsubmit="return confirm('هل أنت متأكد من حذف هذا التعليق؟')">
                                         <input type="hidden" name="comment_id" value="<?php echo $comment['comment_id']; ?>">
-                                        <button type="submit" name="delete_comment" class="delete-comment-btn" title="Delete comment">
+                                        <button type="submit" name="delete_comment" class="delete-comment-btn" title="حذف التعليق">
                                             🗑️
                                         </button>
                                     </form>
                                 </div>
                             </div>
                             <div class="comment-content">
-                                <p><?php echo nl2br(htmlspecialchars($comment['content'])); ?></p>
+                                <p class="comment-text"><?php echo nl2br(htmlspecialchars($comment['content'])); ?></p>
+                                <div class="edit-form" style="display: none;">
+                                    <form method="POST">
+                                        <input type="hidden" name="comment_id" value="<?php echo $comment['comment_id']; ?>">
+                                        <textarea name="content" class="edit-textarea"><?php echo htmlspecialchars($comment['content']); ?></textarea>
+                                        <div class="edit-actions">
+                                            <button type="submit" name="edit_comment" class="save-btn">حفظ</button>
+                                            <button type="button" class="cancel-btn" onclick="cancelEdit(<?php echo $comment['comment_id']; ?>)">إلغاء</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -261,6 +293,24 @@ function timeAgo($datetime) {
             document.body.style.overflow = 'auto';
         }
 
+        function editComment(commentId) {
+            const commentItem = document.getElementById(`comment-${commentId}`);
+            const commentText = commentItem.querySelector('.comment-text');
+            const editForm = commentItem.querySelector('.edit-form');
+            
+            commentText.style.display = 'none';
+            editForm.style.display = 'block';
+        }
+
+        function cancelEdit(commentId) {
+            const commentItem = document.getElementById(`comment-${commentId}`);
+            const commentText = commentItem.querySelector('.comment-text');
+            const editForm = commentItem.querySelector('.edit-form');
+            
+            commentText.style.display = 'block';
+            editForm.style.display = 'none';
+        }
+
         // Close modal when clicking outside
         document.getElementById('pdfModal')?.addEventListener('click', function(e) {
             if (e.target === this) {
@@ -283,6 +333,88 @@ function timeAgo($datetime) {
                 this.style.height = this.scrollHeight + 'px';
             });
         }
+
+        // Auto-resize edit textareas
+        document.querySelectorAll('.edit-textarea').forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = this.scrollHeight + 'px';
+            });
+        });
     </script>
+
+    <style>
+        .edit-form {
+            margin-top: 1rem;
+        }
+        
+        .edit-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+        }
+        
+        .edit-textarea:focus {
+            outline: none;
+            border-color: #2f69b1;
+            box-shadow: 0 0 0 3px rgba(47, 105, 177, 0.1);
+        }
+        
+        .edit-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+        
+        .save-btn, .cancel-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .save-btn {
+            background: #28a745;
+            color: white;
+        }
+        
+        .save-btn:hover {
+            background: #218838;
+        }
+        
+        .cancel-btn {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .cancel-btn:hover {
+            background: #5a6268;
+        }
+        
+        .edit-comment-btn {
+            background: none;
+            border: none;
+            color: #28a745;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+            margin-right: 0.5rem;
+        }
+        
+        .edit-comment-btn:hover {
+            background: #28a745;
+            color: white;
+            transform: scale(1.1);
+        }
+    </style>
 </body>
 </html>
