@@ -1,6 +1,12 @@
 <?php
 require_once 'config/database.php';
+session_start();
 
+
+if (empty($_SESSION['user_id'])) {
+    header("Location: ./auth/login.php");
+    exit;
+}
 $message = '';
 $message_type = '';
 
@@ -42,7 +48,6 @@ if (isset($_GET['ajax'])) {
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
-    $description = trim($_POST['description'] ?? '');
     $type = $_POST['type'] ?? '';
     $level_id = (int)($_POST['level_id'] ?? 0);
     $sector_id = (int)($_POST['sector_id'] ?? 0);
@@ -67,69 +72,86 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = 'File size must be less than 10MB.';
             $message_type = 'error';
         } else {
-            try {
-                $db->beginTransaction();
-                
-                // Get or create program
-                $query = "SELECT program_id FROM program WHERE level_id = :level_id AND Sector_id = :sector_id AND subject_id = :subject_id";
-                $stmt = $db->prepare($query);
-                $stmt->bindParam(':level_id', $level_id);
-                $stmt->bindParam(':sector_id', $sector_id);
-                $stmt->bindParam(':subject_id', $subject_id);
-                $stmt->execute();
-                $program = $stmt->fetch();
-                
-                if (!$program) {
-                    $query = "INSERT INTO program (level_id, Sector_id, subject_id) VALUES (:level_id, :sector_id, :subject_id)";
-                    $stmt = $db->prepare($query);
-                    $stmt->bindParam(':level_id', $level_id);
-                    $stmt->bindParam(':sector_id', $sector_id);
-                    $stmt->bindParam(':subject_id', $subject_id);
-                    $stmt->execute();
-                    $program_id = $db->lastInsertId();
-                } else {
-                    $program_id = $program['program_id'];
-                }
-                
-                // Insert course
-                $query = "INSERT INTO course (title, description, program_id) VALUES (:title, :description, :program_id)";
-                $stmt = $db->prepare($query);
-                $stmt->bindParam(':title', $title);
-                $stmt->bindParam(':description', $description);
-                $stmt->bindParam(':program_id', $program_id);
-                $stmt->execute();
-                $course_id = $db->lastInsertId();
-                
-                // Handle file upload
-                $file_extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-                $unique_filename = uniqid() . '_' . time() . '.' . $file_extension;
-                $upload_path = 'uploads/' . $unique_filename;
-                
-                if (move_uploaded_file($file['tmp_name'], $upload_path)) {
-                    // Insert document record
-                    $query = "INSERT INTO document (course_id, file_name, file_path, file_size, type) VALUES (:course_id, :file_name, :file_path, :file_size, :type)";
-                    $stmt = $db->prepare($query);
-                    $stmt->bindParam(':course_id', $course_id);
-                    $stmt->bindParam(':file_name', $file['name']);
-                    $stmt->bindParam(':file_path', $upload_path);
-                    $stmt->bindParam(':file_size', $file['size']);
-                    $stmt->bindParam(':type', $type);
-                    $stmt->execute();
-                    
-                    $db->commit();
-                    
-                    // Redirect to list page
-                    header("Location: list.php?level_id=$level_id&sector_id=$sector_id");
-                    exit;
-                } else {
-                    throw new Exception('Failed to upload file.');
-                }
-                
-            } catch (Exception $e) {
-                $db->rollBack();
-                $message = 'Error: ' . $e->getMessage();
-                $message_type = 'error';
-            }
+           try {
+    // ... (previous validation and file upload logic)
+
+    // Get or create program
+    $query = "SELECT program_id FROM program WHERE level_id = :level_id AND Sector_id = :sector_id AND subject_id = :subject_id";
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':level_id', $level_id);
+    $stmt->bindParam(':sector_id', $sector_id);
+    $stmt->bindParam(':subject_id', $subject_id);
+    $stmt->execute();
+    $program = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$program) {
+        // Create program if it doesn't exist
+        $query = "INSERT INTO program (level_id, Sector_id, subject_id) VALUES (:level_id, :sector_id, :subject_id)";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':level_id', $level_id);
+        $stmt->bindParam(':sector_id', $sector_id);
+        $stmt->bindParam(':subject_id', $subject_id);
+        $stmt->execute();
+        $program_id = $db->lastInsertId();
+    } else {
+        $program_id = $program['program_id'];
+    }
+
+    // Insert course
+    $query = "INSERT INTO course (tittle, program_id) VALUES (:tittle, :program_id)";
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':tittle', $title);
+    $stmt->bindParam(':program_id', $program_id);
+    $stmt->execute();
+    $course_id = $db->lastInsertId(); // Get the newly inserted course_id
+    //file path start here
+        if (isset($_FILES['document']) && $_FILES['document']['error'] === UPLOAD_ERR_OK) {
+        $fileTmpPath = $_FILES['document']['tmp_name'];
+        $fileName = $_FILES['document']['name'];
+        $fileSize = $_FILES['document']['size'];
+        $fileType = $_FILES['document']['type'];
+
+        // You can sanitize the filename if needed
+        $fileName = basename($fileName);
+
+        // Specify the directory where you want to move the uploaded file
+        $uploadDir = 'uploads/';
+
+        // Make sure the uploads directory exists, if not, create it
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        $destPath = $uploadDir . $fileName;
+        if (move_uploaded_file($fileTmpPath, $destPath)) {
+            $query = "INSERT INTO document (course_id, file_name, file_path, file_size, type,user_id) VALUES (:course_id, :file_name, :file_path, :file_size, :type,:user_id)";
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':course_id', $course_id);
+            $stmt->bindParam(':file_name', $file['name']);
+            $stmt->bindParam(':file_path', $destPath);
+            $stmt->bindParam(':file_size', $file['size']);
+            $stmt->bindParam(':type', $type);
+            $stmt->bindParam(':user_id', $_SESSION['user_id']);
+            $stmt->execute();
+
+            $message = "Document uploaded successfully!";
+            $messageType = 'success';
+
+        } else {
+        }
+    } else {
+        $message = "No file uploaded or there was an upload error.";
+        $messageType = 'error';
+    }
+
+
+    //file path end here
+    // Insert document
+    
+} catch (PDOException $e) {
+    $message = "Database error: " . $e->getMessage();
+    $messageType = 'error';
+}
         }
     }
 }
@@ -167,7 +189,7 @@ $levels = $stmt->fetchAll();
                 <!-- First Row -->
                 <div class="form-row">
                     <input type="text" name="title" class="form-input" placeholder="Course Title" 
-                           value="<?php echo htmlspecialchars($_POST['title'] ?? ''); ?>" required>
+                           value="<?php echo htmlspecialchars($_POST['tittle'] ?? ''); ?>" required>
                     
                     <select name="type" class="form-select" required>
                         <option value="">Select Type</option>
@@ -201,9 +223,6 @@ $levels = $stmt->fetchAll();
                     <option value="">Select Subject</option>
                 </select>
 
-                <!-- Description -->
-                <textarea name="description" class="form-textarea" placeholder="Description (optional)" 
-                          rows="3"><?php echo htmlspecialchars($_POST['description'] ?? ''); ?></textarea>
 
                 <!-- Upload Area -->
                 <div class="upload-area" id="uploadArea">

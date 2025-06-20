@@ -1,4 +1,5 @@
- <!DOCTYPE html>
+
+<!DOCTYPE html>
  <html lang="en">
 
  <head>
@@ -19,10 +20,20 @@
                  <a href="#about" class="nav-link">ABOUT</a>
                  <a href="#level" class="nav-link">COURSES</a>
                  <a href="#contact" class="nav-link">CONTACT</a>
+                 
              </nav>
-             <div class="user-icon">
-                <button class="login" onclick="window.location.href='./auth/login.php'">Login</button>
-            </div>
+          <div class="buttons">
+        <?php if (!empty($_SESSION['user_id'])): ?>
+            <a href="auth/logout.php">
+                LogOut</a>
+        <?php else: ?>
+            <button><a href="auth/login.php">Login</a></button>
+            <button><a href="auth/register.php">Sign Up</a></button>
+            <a href="./my_space.php">
+                <i class="fa-solid fa-user"></i>
+            </a>
+        <?php endif; ?>
+    </div>
          </div>
      </header>
 

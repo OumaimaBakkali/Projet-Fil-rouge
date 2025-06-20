@@ -2,7 +2,6 @@
 require_once 'config/database.php';
 
 
-
 try {
     $query = "SELECT COUNT(*) as total FROM level";
     $stmt = $db->prepare($query);
