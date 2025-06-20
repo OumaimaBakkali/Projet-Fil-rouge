@@ -3,6 +3,13 @@ body {
     z-index: 1;
     font-family: Roboto, serif;
 }
+.error {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    display: block;
+}
+
 
 .baground {
     z-index: 1;
