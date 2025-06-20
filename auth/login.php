@@ -1,3 +1,38 @@
+<?php
+require '../config/database.php';
+session_start();
+
+// Redirect if already logged in
+if (isset($_SESSION['user_id'])) {
+    header("Location: ../index.php");
+    exit;
+}
+
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email']);
+    $password = $_POST['password'];
+
+    if (!empty($email) && !empty($password)) {
+        $query = $db->prepare("SELECT * FROM users WHERE email = :email");
+        $query->execute(['email' => $email]);
+        $user = $query->fetch(PDO::FETCH_ASSOC);
+
+        if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['nom'] = $user['first_name'];
+            header('Location: ../index.php');
+            exit;
+        } else {
+            $error = "Email ou mot de passe incorrect.";
+        }
+    } else {
+        $error = "Veuillez remplir tous les champs.";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,12 +50,12 @@
             </div>
         <div class="login-card">
             <h2 class="login-welcome-title">Welcome!</h2>
-            <form>
+            <form method="post">
                 <div class="login-form-group">
-                    <input type="email" class="login-form-input" placeholder="Email" required>
+                    <input type="email" name="email" class="login-form-input" placeholder="Email" required>
                 </div>
                 <div class="login-form-group">
-                    <input type="password" class="login-form-input" placeholder="Password" required>
+                    <input type="password" name="password" class="login-form-input" placeholder="Password" required>
                 </div>
                 <button type="submit" class="login-button">LOGIN</button>
                 <div class="form-links">
