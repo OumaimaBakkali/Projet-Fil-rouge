@@ -3,6 +3,7 @@ body {
     z-index: 1;
     font-family: Roboto, serif;
 }
+
 .error {
     color: red;
     font-size: 0.8rem;

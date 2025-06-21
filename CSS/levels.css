@@ -16,7 +16,6 @@ a {
   color: inherit;
 }
 
-
 .hero {
   background: linear-gradient(to right, #2F69B1, #2F69B1);
   padding: 5rem 1.5rem;
@@ -282,70 +281,4 @@ a {
 .course-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-}
-
-
-
-/* Responsive */
-@media (max-width: 768px) {
-  .nav-menu {
-    display: none;
-  }
-
-  .hero h1 {
-    font-size: 2.5rem;
-  }
-
-  .category-tabs {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .course-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-50px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .modal-content {
-    margin: 20px;
-    padding: 20px;
-  }
-
-  .sectors-grid {
-    grid-template-columns: 1fr;
-  }
 }

@@ -45,6 +45,36 @@ a {
     align-items: center;
     justify-content: center;
 }
+/* Style commun pour tous les boutons */
+.buttons button, 
+.buttons a.logout-btn {
+    background-color: #2f69b1;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 25px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none; /* pour les liens */
+    display: inline-block;
+    margin-left: 0.5rem;
+}
+
+.buttons button:hover, 
+.buttons a.logout-btn:hover {
+    background-color: #1f4f88;
+    transform: translateY(-2px);
+}
+
+/* Style des liens à l'intérieur des boutons pour éviter le style par défaut */
+.buttons button a {
+    color: white;
+    text-decoration: none;
+    display: block;
+}
 
 /*footer*/
 * {
@@ -149,23 +179,4 @@ footer {
 .login:hover {
   background-color: #1f4f88;
   transform: translateY(-2px);
-}
-
-
-
-@media (max-width: 768px) {
-    .footer-text {
-        font-size: 1.1rem;
-        padding: 0 1rem;
-    }
-
-    .footer-nav {
-        flex-direction: column;
-    }
-}
-
-@media (max-width: 480px) {
-    .nav-links {
-        gap: 1rem;
-    }
 }
