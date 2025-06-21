@@ -1,5 +1,6 @@
 <?php
 require_once 'config/database.php';
+session_start();
 
 if (!isset($_GET['level_id']) || !isset($_GET['sector_id'])) {
     header('Location: levels.php');
@@ -86,82 +87,87 @@ function getSubjectIcon($subject_name)
 
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8" />
     <title>StudySwap - <?php echo htmlspecialchars($info['sector_name']); ?></title>
     <link rel="stylesheet" href="CSS/list.css" />
     <link rel="stylesheet" href="CSS/style.css" />
     <style>
-        .course-card { cursor:pointer; }
+        .course-card {
+            cursor: pointer;
+        }
     </style>
 </head>
+
 <body>
 
-<?php include "header.php"; ?>
+    <?php include "header.php"; ?>
 
-<section class="breadcrumb">
-    <div class="container">
-        <nav class="breadcrumb-nav">
-            <a href="index.php">Accueil</a> &gt;
-            <a href="levels.php">Niveaux</a> &gt;
-            <a href="levels.php?level_id=<?php echo $level_id; ?>"><?php echo htmlspecialchars($info['level_name']); ?></a> &gt;
-            <span><?php echo htmlspecialchars($info['sector_name']); ?></span>
-        </nav>
-    </div>
-</section>
+    <section class="breadcrumb">
+        <div class="container">
+            <nav class="breadcrumb-nav">
+                <a href="index.php">Accueil</a> &gt;
+                <a href="levels.php">Niveaux</a> &gt;
+                <a href="levels.php?level_id=<?php echo $level_id; ?>"><?php echo htmlspecialchars($info['level_name']); ?></a> &gt;
+                <span><?php echo htmlspecialchars($info['sector_name']); ?></span>
+            </nav>
+        </div>
+    </section>
 
-<section class="hero">
-    <div class="container">
-        <h1><?php echo htmlspecialchars($info['sector_name']); ?></h1>
-        <p><?php echo htmlspecialchars($info['level_name']); ?></p>
-    </div>
-</section>
+    <section class="hero">
+        <div class="container">
+            <h1><?php echo htmlspecialchars($info['sector_name']); ?></h1>
+            <p><?php echo htmlspecialchars($info['level_name']); ?></p>
+        </div>
+    </section>
 
-<main class="main">
-    <div class="container">
-        <form method="GET" class="search-container">
-            <input type="hidden" name="level_id" value="<?php echo $level_id; ?>">
-            <input type="hidden" name="sector_id" value="<?php echo $sector_id; ?>">
+    <main class="main">
+        <div class="container">
+            <form method="GET" class="search-container">
+                <input type="hidden" name="level_id" value="<?php echo $level_id; ?>">
+                <input type="hidden" name="sector_id" value="<?php echo $sector_id; ?>">
 
-            <select name="subject" onchange="this.form.submit()" class="search-input">
-                <option value="0">📚 Toutes les matières</option>
-                <?php foreach ($subjects as $subject): ?>
-                    <option value="<?php echo $subject['subject_id']; ?>" <?php if ($subject_filter == $subject['subject_id']) echo 'selected'; ?>>
-                        <?php echo htmlspecialchars($subject['subject_name']); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </form>
+                <select name="subject" onchange="this.form.submit()" class="search-input">
+                    <option value="0">📚 Toutes les matières</option>
+                    <?php foreach ($subjects as $subject): ?>
+                        <option value="<?php echo $subject['subject_id']; ?>" <?php if ($subject_filter == $subject['subject_id']) echo 'selected'; ?>>
+                            <?php echo htmlspecialchars($subject['subject_name']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </form>
 
-        <?php if (count($courses) > 0): ?>
-            <div class="course-grid">
-                <?php foreach ($courses as $course):
-                    $subject_info = getSubjectIcon($course['subject_name']);
-                ?>
-                    <div class="course-card" onclick="location.href='view.php?course_id=<?php echo $course['course_id']; ?>'">
-                        <div class="course-subject"><?php echo htmlspecialchars($course['subject_name']); ?></div>
-                        <div class="course-icon <?php echo $subject_info['color']; ?>">
-                            <?php echo $subject_info['icon']; ?>
+            <?php if (count($courses) > 0): ?>
+                <div class="course-grid">
+                    <?php foreach ($courses as $course):
+                        $subject_info = getSubjectIcon($course['subject_name']);
+                    ?>
+                        <div class="course-card" onclick="location.href='courseDetails.php?course_id=<?php echo $course['course_id']; ?>'">
+                            <div class="course-subject"><?php echo htmlspecialchars($course['subject_name']); ?></div>
+                            <div class="course-icon <?php echo $subject_info['color']; ?>">
+                                <?php echo $subject_info['icon']; ?>
+                            </div>
+                            <div class="course-title"><?php echo htmlspecialchars($course['tittle']); ?></div>
                         </div>
-                        <div class="course-title"><?php echo htmlspecialchars($course['tittle']); ?></div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php else: ?>
-            <div class="no-results">
-                <h3>🔍 Aucun cours trouvé</h3>
-                <p>Aucun cours n'est disponible pour ce filtre.</p>
-                <?php if ($subject_filter): ?>
-                    <button class="clear-filters" onclick="window.location.href='list.php?level_id=<?php echo $level_id; ?>&sector_id=<?php echo $sector_id; ?>'">
-                        Voir tous les cours
-                    </button>
-                <?php endif; ?>
-            </div>
-        <?php endif; ?>
-    </div>
-</main>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="no-results">
+                    <h3>🔍 Aucun cours trouvé</h3>
+                    <p>Aucun cours n'est disponible pour ce filtre.</p>
+                    <?php if ($subject_filter): ?>
+                        <button class="clear-filters" onclick="window.location.href='list.php?level_id=<?php echo $level_id; ?>&sector_id=<?php echo $sector_id; ?>'">
+                            Voir tous les cours
+                        </button>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    </main>
 
-<?php include "footer.php"; ?>
+    <?php include "footer.php"; ?>
 
 </body>
+
 </html>

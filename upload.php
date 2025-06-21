@@ -13,7 +13,7 @@ $message_type = '';
 // Handle AJAX requests for dynamic dropdowns
 if (isset($_GET['ajax'])) {
     header('Content-Type: application/json');
-    
+
     if ($_GET['ajax'] === 'sectors' && isset($_GET['level_id'])) {
         $level_id = (int)$_GET['level_id'];
         $query = "SELECT s.Sector_id, s.sector_name 
@@ -27,7 +27,7 @@ if (isset($_GET['ajax'])) {
         echo json_encode($stmt->fetchAll());
         exit;
     }
-    
+
     if ($_GET['ajax'] === 'subjects' && isset($_GET['level_id'], $_GET['sector_id'])) {
         $level_id = (int)$_GET['level_id'];
         $sector_id = (int)$_GET['sector_id'];
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $level_id = (int)($_POST['level_id'] ?? 0);
     $sector_id = (int)($_POST['sector_id'] ?? 0);
     $subject_id = (int)($_POST['subject_id'] ?? 0);
-    
+
     // Validation
     if (empty($title) || empty($type) || !$level_id || !$sector_id || !$subject_id) {
         $message = 'Please fill in all required fields.';
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $file = $_FILES['document'];
         $allowed_types = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'text/plain'];
         $max_size = 10 * 1024 * 1024; // 10MB
-        
+
         if (!in_array($file['type'], $allowed_types)) {
             $message = 'Invalid file type. Please upload PDF, DOC, DOCX, PPT, PPTX, or TXT files.';
             $message_type = 'error';
@@ -72,86 +72,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = 'File size must be less than 10MB.';
             $message_type = 'error';
         } else {
-           try {
-    // ... (previous validation and file upload logic)
+            try {
+                // ... (previous validation and file upload logic)
 
-    // Get or create program
-    $query = "SELECT program_id FROM program WHERE level_id = :level_id AND Sector_id = :sector_id AND subject_id = :subject_id";
-    $stmt = $db->prepare($query);
-    $stmt->bindParam(':level_id', $level_id);
-    $stmt->bindParam(':sector_id', $sector_id);
-    $stmt->bindParam(':subject_id', $subject_id);
-    $stmt->execute();
-    $program = $stmt->fetch(PDO::FETCH_ASSOC);
+                // Get or create program
+                $query = "SELECT program_id FROM program WHERE level_id = :level_id AND Sector_id = :sector_id AND subject_id = :subject_id";
+                $stmt = $db->prepare($query);
+                $stmt->bindParam(':level_id', $level_id);
+                $stmt->bindParam(':sector_id', $sector_id);
+                $stmt->bindParam(':subject_id', $subject_id);
+                $stmt->execute();
+                $program = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$program) {
-        // Create program if it doesn't exist
-        $query = "INSERT INTO program (level_id, Sector_id, subject_id) VALUES (:level_id, :sector_id, :subject_id)";
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':level_id', $level_id);
-        $stmt->bindParam(':sector_id', $sector_id);
-        $stmt->bindParam(':subject_id', $subject_id);
-        $stmt->execute();
-        $program_id = $db->lastInsertId();
-    } else {
-        $program_id = $program['program_id'];
-    }
+                if (!$program) {
+                    // Create program if it doesn't exist
+                    $query = "INSERT INTO program (level_id, Sector_id, subject_id) VALUES (:level_id, :sector_id, :subject_id)";
+                    $stmt = $db->prepare($query);
+                    $stmt->bindParam(':level_id', $level_id);
+                    $stmt->bindParam(':sector_id', $sector_id);
+                    $stmt->bindParam(':subject_id', $subject_id);
+                    $stmt->execute();
+                    $program_id = $db->lastInsertId();
+                } else {
+                    $program_id = $program['program_id'];
+                }
 
-    // Insert course
-    $query = "INSERT INTO course (tittle, program_id) VALUES (:tittle, :program_id)";
-    $stmt = $db->prepare($query);
-    $stmt->bindParam(':tittle', $title);
-    $stmt->bindParam(':program_id', $program_id);
-    $stmt->execute();
-    $course_id = $db->lastInsertId(); // Get the newly inserted course_id
-    //file path start here
-        if (isset($_FILES['document']) && $_FILES['document']['error'] === UPLOAD_ERR_OK) {
-        $fileTmpPath = $_FILES['document']['tmp_name'];
-        $fileName = $_FILES['document']['name'];
-        $fileSize = $_FILES['document']['size'];
-        $fileType = $_FILES['document']['type'];
+                // Insert course
+                $query = "INSERT INTO course (tittle, program_id) VALUES (:tittle, :program_id)";
+                $stmt = $db->prepare($query);
+                $stmt->bindParam(':tittle', $title);
+                $stmt->bindParam(':program_id', $program_id);
+                $stmt->execute();
+                $course_id = $db->lastInsertId(); // Get the newly inserted course_id
+                //file path start here
+                if (isset($_FILES['document']) && $_FILES['document']['error'] === UPLOAD_ERR_OK) {
+                    $fileTmpPath = $_FILES['document']['tmp_name'];
+                    $fileName = $_FILES['document']['name'];
+                    $fileSize = $_FILES['document']['size'];
+                    $fileType = $_FILES['document']['type'];
 
-        // You can sanitize the filename if needed
-        $fileName = basename($fileName);
+                    // You can sanitize the filename if needed
+                    $fileName = basename($fileName);
 
-        // Specify the directory where you want to move the uploaded file
-        $uploadDir = 'uploads/';
+                    // Specify the directory where you want to move the uploaded file
+                    $uploadDir = 'uploads/';
 
-        // Make sure the uploads directory exists, if not, create it
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
+                    // Make sure the uploads directory exists, if not, create it
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
 
-        $destPath = $uploadDir . $fileName;
-        if (move_uploaded_file($fileTmpPath, $destPath)) {
-            $query = "INSERT INTO document (course_id, file_name, file_path, file_size, type,user_id) VALUES (:course_id, :file_name, :file_path, :file_size, :type,:user_id)";
-            $stmt = $db->prepare($query);
-            $stmt->bindParam(':course_id', $course_id);
-            $stmt->bindParam(':file_name', $file['name']);
-            $stmt->bindParam(':file_path', $destPath);
-            $stmt->bindParam(':file_size', $file['size']);
-            $stmt->bindParam(':type', $type);
-            $stmt->bindParam(':user_id', $_SESSION['user_id']);
-            $stmt->execute();
+                    $destPath = $uploadDir . $fileName;
+                    if (move_uploaded_file($fileTmpPath, $destPath)) {
+                        $query = "INSERT INTO document (course_id, file_name, file_path, file_size, type,user_id) VALUES (:course_id, :file_name, :file_path, :file_size, :type,:user_id)";
+                        $stmt = $db->prepare($query);
+                        $stmt->bindParam(':course_id', $course_id);
+                        $stmt->bindParam(':file_name', $file['name']);
+                        $stmt->bindParam(':file_path', $destPath);
+                        $stmt->bindParam(':file_size', $file['size']);
+                        $stmt->bindParam(':type', $type);
+                        $stmt->bindParam(':user_id', $_SESSION['user_id']);
+                        $stmt->execute();
 
-            $message = "Document uploaded successfully!";
-            $messageType = 'success';
+                        $message = "Document uploaded successfully!";
+                        $messageType = 'success';
+                    } else {
+                    }
+                } else {
+                    $message = "No file uploaded or there was an upload error.";
+                    $messageType = 'error';
+                }
 
-        } else {
-        }
-    } else {
-        $message = "No file uploaded or there was an upload error.";
-        $messageType = 'error';
-    }
 
+                //file path end here
+                // Insert document
 
-    //file path end here
-    // Insert document
-    
-} catch (PDOException $e) {
-    $message = "Database error: " . $e->getMessage();
-    $messageType = 'error';
-}
+            } catch (PDOException $e) {
+                $message = "Database error: " . $e->getMessage();
+                $messageType = 'error';
+            }
         }
     }
 }
@@ -165,6 +164,7 @@ $levels = $stmt->fetchAll();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -172,13 +172,14 @@ $levels = $stmt->fetchAll();
     <link rel="stylesheet" href="CSS/upload.css">
     <link rel="stylesheet" href="CSS/style.css">
 </head>
+
 <body>
     <?php include "header.php"; ?>
 
     <main class="main">
         <div class="upload-container">
             <h1 class="title">Upload Your Course</h1>
-            
+
             <?php if ($message): ?>
                 <div class="message <?php echo $message_type; ?>">
                     <?php echo htmlspecialchars($message); ?>
@@ -188,9 +189,9 @@ $levels = $stmt->fetchAll();
             <form method="POST" enctype="multipart/form-data" class="form" id="uploadForm">
                 <!-- First Row -->
                 <div class="form-row">
-                    <input type="text" name="title" class="form-input" placeholder="Course Title" 
-                           value="<?php echo htmlspecialchars($_POST['tittle'] ?? ''); ?>" required>
-                    
+                    <input type="text" name="title" class="form-input" placeholder="Course Title"
+                        value="<?php echo htmlspecialchars($_POST['tittle'] ?? ''); ?>" required>
+
                     <select name="type" class="form-select" required>
                         <option value="">Select Type</option>
                         <option value="course" <?php echo (($_POST['type'] ?? '') === 'course') ? 'selected' : ''; ?>>Course</option>
@@ -206,13 +207,13 @@ $levels = $stmt->fetchAll();
                     <select name="level_id" id="levelSelect" class="form-select" required>
                         <option value="">Select Level</option>
                         <?php foreach ($levels as $level): ?>
-                            <option value="<?php echo $level['level_id']; ?>" 
-                                    <?php echo (($_POST['level_id'] ?? '') == $level['level_id']) ? 'selected' : ''; ?>>
+                            <option value="<?php echo $level['level_id']; ?>"
+                                <?php echo (($_POST['level_id'] ?? '') == $level['level_id']) ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars($level['level_name']); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    
+
                     <select name="sector_id" id="sectorSelect" class="form-select" required disabled>
                         <option value="">Select Sector</option>
                     </select>
@@ -250,8 +251,8 @@ $levels = $stmt->fetchAll();
                     <span class="btn-loading" style="display: none;">
                         <svg class="spinner" viewBox="0 0 24 24">
                             <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="31.416" stroke-dashoffset="31.416">
-                                <animate attributeName="stroke-dasharray" dur="2s" values="0 31.416;15.708 15.708;0 31.416" repeatCount="indefinite"/>
-                                <animate attributeName="stroke-dashoffset" dur="2s" values="0;-15.708;-31.416" repeatCount="indefinite"/>
+                                <animate attributeName="stroke-dasharray" dur="2s" values="0 31.416;15.708 15.708;0 31.416" repeatCount="indefinite" />
+                                <animate attributeName="stroke-dashoffset" dur="2s" values="0;-15.708;-31.416" repeatCount="indefinite" />
                             </circle>
                         </svg>
                         Uploading...
@@ -383,7 +384,7 @@ $levels = $stmt->fetchAll();
         form.addEventListener('submit', function(e) {
             const btnText = submitBtn.querySelector('.btn-text');
             const btnLoading = submitBtn.querySelector('.btn-loading');
-            
+
             btnText.style.display = 'none';
             btnLoading.style.display = 'inline-flex';
             submitBtn.disabled = true;
@@ -399,4 +400,5 @@ $levels = $stmt->fetchAll();
         }
     </script>
 </body>
+
 </html>

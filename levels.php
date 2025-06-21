@@ -1,5 +1,6 @@
 <?php
 require_once 'config/database.php';
+session_start();
 
 // Récupérer tous les niveaux
 $query = "SELECT * FROM level ORDER BY level_id";
@@ -40,7 +41,7 @@ if (isset($_GET['ajax'], $_GET['level_id']) && $_GET['ajax'] === 'sectors') {
 
   <section class="hero">
     <div class="container">
-      <h1>NIVEAUX SCOLAIRES</h1>
+      <h1>SCHOOL LEVELS</h1>
       <p>Choisissez votre niveau pour explorer les secteurs disponibles</p>
     </div>
   </section>
@@ -73,13 +74,13 @@ if (isset($_GET['ajax'], $_GET['level_id']) && $_GET['ajax'] === 'sectors') {
   <div id="sectorsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title" id="modalTitle">Secteurs disponibles</h2>
+        <h2 class="modal-title" id="modalTitle">Available sectors</h2>
         <button class="close-btn" onclick="closeModal()" aria-label="Fermer la fenêtre">&times;</button>
       </div>
       <div id="sectorsContainer">
         <div class="loading">
           <div class="spinner"></div>
-          <p>Chargement des secteurs...</p>
+          <p>Loading sectors...</p>
         </div>
       </div>
     </div>
@@ -95,11 +96,11 @@ if (isset($_GET['ajax'], $_GET['level_id']) && $_GET['ajax'] === 'sectors') {
       const modalTitle = document.getElementById('modalTitle');
       const sectorsContainer = document.getElementById('sectorsContainer');
 
-      modalTitle.textContent = `Secteurs - ${levelName}`;
+      modalTitle.textContent = `Sector - ${levelName}`;
       sectorsContainer.innerHTML = `
                 <div class="loading">
                     <div class="spinner"></div>
-                    <p>Chargement des secteurs...</p>
+                    <p>oading sectors...</p>
                 </div>
             `;
       modal.classList.add('show');
@@ -114,8 +115,8 @@ if (isset($_GET['ajax'], $_GET['level_id']) && $_GET['ajax'] === 'sectors') {
           if (sectors.length === 0) {
             sectorsContainer.innerHTML = `
                             <div class="no-sectors">
-                                <h3>😔 Aucun secteur disponible</h3>
-                                <p>Il n'y a pas de secteurs configurés pour ce niveau.</p>
+                                <h3>😔No sectors available</h3>
+                                <p>There are no sectors configured for this level.</p>
                             </div>
                         `;
           } else {
