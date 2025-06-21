@@ -91,77 +91,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body>
 
-  
-        <div class="baground">
-            <img class="img" src="../IMG/baground.jpeg">
 
-            <div class="logo">
-                <img src="../IMG/logo.png">
-            </div>
+    <div class="baground">
+        <img class="img" src="../IMG/baground.jpeg">
 
-            <div class="register-form-container">
-                <h2 class="register-form-title">Welcome!</h2>
-
-                <form class="registration-form" method="POST" action="">
-                    <!-- First Name and Last Name Row -->
-                    <div class="register-form-row">
-                        <div class="register-form-group">
-                            <input type="text" name="prenom" placeholder="First Name" class="register-form-input" value="<?= htmlspecialchars($prenom ?? '') ?>">
-                            <?php if (isset($errors['prenom'])): ?>
-                                <small class="error"><?= $errors['prenom'] ?></small>
-                            <?php endif; ?>
-                        </div>
-                        <div class="register-form-group">
-                            <input type="text" name="nom" placeholder="Last Name" class="register-form-input" value="<?= htmlspecialchars($nom ?? '') ?>">
-                            <?php if (isset($errors['nom'])): ?>
-                                <small class="error"><?= $errors['nom'] ?></small>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-
-                    <!-- Email Address -->
-                    <div class="register-form-group full-width">
-                        <input type="email" name="email" placeholder="Email Address" class="register-form-input" value="<?= htmlspecialchars($email ?? '') ?>">
-                        <?php if (isset($errors['email'])): ?>
-                            <small class="error"><?= $errors['email'] ?></small>
-                        <?php endif; ?>
-                    </div>
-
-                    <!-- Phone Number -->
-                    <div class="register-form-group full-width">
-                        <input type="tel" name="telephone" placeholder="Phone Number" class="register-form-input" value="<?= htmlspecialchars($telephone ?? '') ?>">
-                        <?php if (isset($errors['telephone'])): ?>
-                            <small class="error"><?= $errors['telephone'] ?></small>
-                        <?php endif; ?>
-                    </div>
-
-                    <!-- Password and Confirm Password Row -->
-                    <div class="register-form-row">
-                        <div class="register-form-group">
-                            <input type="password" name="password" placeholder="Password" class="register-form-input">
-                            <?php if (isset($errors['password'])): ?>
-                                <small class="error"><?= $errors['password'] ?></small>
-                            <?php endif; ?>
-                        </div>
-                        <div class="register-form-group">
-                            <input type="password" name="confirm_password" placeholder="Confirm Password" class="register-form-input">
-                            <?php if (isset($errors['confirm_password'])): ?>
-                                <small class="error"><?= $errors['confirm_password'] ?></small>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-
-                    <!-- Create Account Button -->
-                    <div class="button-container">
-                        <button type="submit" class="create-account-btn">Create Account</button>
-                    </div>
-
-                    <p>Do you have an account? <a href="../auth/login.php">Login</a></p>
-                </form>
-            </div>
+        <div class="logo">
+            <img src="../IMG/logo.png">
         </div>
 
-   
+        <div class="register-form-container">
+            <h2 class="register-form-title">Welcome!</h2>
+
+            <form class="registration-form" method="POST" action="">
+                <!-- First Name and Last Name Row -->
+                <div class="register-form-row">
+                    <div class="register-form-group">
+                        <input type="text" name="prenom" placeholder="First Name" class="register-form-input" value="<?= htmlspecialchars($prenom ?? '') ?>">
+                        <?php if (isset($errors['prenom'])): ?>
+                            <small class="error"><?= $errors['prenom'] ?></small>
+                        <?php endif; ?>
+                    </div>
+                    <div class="register-form-group">
+                        <input type="text" name="nom" placeholder="Last Name" class="register-form-input" value="<?= htmlspecialchars($nom ?? '') ?>">
+                        <?php if (isset($errors['nom'])): ?>
+                            <small class="error"><?= $errors['nom'] ?></small>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Email Address -->
+                <div class="register-form-group full-width">
+                    <input type="email" name="email" placeholder="Email Address" class="register-form-input" value="<?= htmlspecialchars($email ?? '') ?>">
+                    <?php if (isset($errors['email'])): ?>
+                        <small class="error"><?= $errors['email'] ?></small>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="register-form-group full-width">
+                    <input type="tel" name="telephone" placeholder="Phone Number" class="register-form-input" value="<?= htmlspecialchars($telephone ?? '') ?>">
+                    <?php if (isset($errors['telephone'])): ?>
+                        <small class="error"><?= $errors['telephone'] ?></small>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Password and Confirm Password Row -->
+                <div class="register-form-row">
+                    <div class="register-form-group">
+                        <input type="password" name="password" placeholder="Password" class="register-form-input">
+                        <?php if (isset($errors['password'])): ?>
+                            <small class="error"><?= $errors['password'] ?></small>
+                        <?php endif; ?>
+                    </div>
+                    <div class="register-form-group">
+                        <input type="password" name="confirm_password" placeholder="Confirm Password" class="register-form-input">
+                        <?php if (isset($errors['confirm_password'])): ?>
+                            <small class="error"><?= $errors['confirm_password'] ?></small>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Create Account Button -->
+                <div class="button-container">
+                    <button type="submit" class="create-account-btn">Create Account</button>
+                </div>
+
+                <p>Do you have an account? <a href="../auth/login.php">Login</a></p>
+            </form>
+        </div>
+    </div>
+
+
 
 
 
